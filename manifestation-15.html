@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>15 — Fire From Heaven — Unified Manifestations</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:#000;overflow:hidden}
+body{display:grid;place-items:center}
+.viewer{position:fixed;inset:0;overflow:hidden;background:#000;touch-action:none;cursor:zoom-in}
+.art{position:absolute;left:50%;top:50%;width:100vw;height:100vh;object-fit:contain;object-position:center;background:#000;display:block;transform:translate(-50%,-50%) scale(1);transform-origin:center center;user-select:none;-webkit-user-drag:none;will-change:transform}
+.viewer.zoomed{cursor:grab}.viewer.dragging{cursor:grabbing}
+.back{position:fixed;top:max(16px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));z-index:10;padding:10px 14px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(0,0,0,.56);backdrop-filter:blur(8px);color:#fff;text-decoration:none;font:600 12px/1.2 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;opacity:.72;transition:opacity .2s,border-color .2s,background .2s}
+.back:hover,.back:focus-visible{opacity:1;border-color:rgba(255,255,255,.48);background:rgba(0,0,0,.76);outline:none}
+.hint{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:10;padding:8px 11px;border-radius:999px;background:rgba(0,0,0,.45);color:rgba(255,255,255,.72);font:500 11px/1.2 Arial,sans-serif;letter-spacing:.05em;pointer-events:none;transition:opacity .25s}
+.viewer.zoomed~.hint{opacity:0}
+
+.nextbtn{position:fixed;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));z-index:11;padding:10px 14px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(0,0,0,.56);backdrop-filter:blur(8px);color:#fff;text-decoration:none;font:600 12px/1.2 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;opacity:.72;transition:opacity .2s,border-color .2s,background .2s}
+.nextbtn:hover,.nextbtn:focus-visible{opacity:1;border-color:rgba(255,255,255,.48);background:rgba(0,0,0,.76);outline:none}
+</style>
+</head>
+<body>
+<div class="viewer" id="viewer" aria-label="Zoomable manifestation image viewer">
+  <img class="art" id="art" src="images/manifestation-15.png" alt="Fire From Heaven — Unified Manifestations" draggable="false">
+</div>
+<a class="back" href="index.html#manifestations" aria-label="Return to manifestation archive">Back to Manifestations</a>
+<a class="nextbtn" href="manifestation-01.html" aria-label="Next manifestation">Next Manifestation</a>
+<div class="hint">Click to zoom · drag to pan · Esc to reset</div>
+<script>
+(() => {
+  const viewer = document.getElementById('viewer');
+  const art = document.getElementById('art');
+  const SCALE = 2.5;
+  let zoomed = false;
+  let x = 0, y = 0;
+  let startX = 0, startY = 0;
+  let originX = 0, originY = 0;
+  let dragging = false;
+  let moved = false;
+
+  function render(){
+    art.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${zoomed ? SCALE : 1})`;
+    viewer.classList.toggle('zoomed', zoomed);
+  }
+
+  function reset(){
+    zoomed = false;
+    x = 0; y = 0;
+    dragging = false;
+    viewer.classList.remove('dragging');
+    render();
+  }
+
+  viewer.addEventListener('click', (e) => {
+    if (moved) { moved = false; return; }
+    if (!zoomed) {
+      const r = viewer.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2);
+      const dy = e.clientY - (r.top + r.height / 2);
+      zoomed = true;
+      x = -dx * (SCALE - 1);
+      y = -dy * (SCALE - 1);
+      render();
+    } else {
+      reset();
+    }
+  });
+
+  viewer.addEventListener('pointerdown', (e) => {
+    if (!zoomed) return;
+    dragging = true;
+    moved = false;
+    startX = e.clientX;
+    startY = e.clientY;
+    originX = x;
+    originY = y;
+    viewer.setPointerCapture(e.pointerId);
+    viewer.classList.add('dragging');
+  });
+
+  viewer.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (Math.abs(dx) + Math.abs(dy) > 4) moved = true;
+    x = originX + dx;
+    y = originY + dy;
+    render();
+  });
+
+  function endDrag(e){
+    if (!dragging) return;
+    dragging = false;
+    viewer.classList.remove('dragging');
+    if (e.pointerId != null && viewer.hasPointerCapture(e.pointerId)) viewer.releasePointerCapture(e.pointerId);
+  }
+  viewer.addEventListener('pointerup', endDrag);
+  viewer.addEventListener('pointercancel', endDrag);
+
+  viewer.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    if (e.deltaY < 0 && !zoomed) {
+      zoomed = true;
+      render();
+    } else if (e.deltaY > 0 && zoomed) {
+      reset();
+    }
+  }, {passive:false});
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') reset();
+    if (e.key === 'ArrowRight') location.href = 'manifestation-01.html';
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
