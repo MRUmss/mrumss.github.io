@@ -28,10 +28,124 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:79;bac
 footer{position:relative;z-index:2;padding:50px 22px 70px;background:#020202;border-top:1px solid rgba(213,174,103,.12);color:#6e675d;font-size:9px;letter-spacing:.16em;text-transform:uppercase;text-align:center}
 @media(max-width:700px){.nav{align-items:flex-start}.brand{white-space:normal}.hero{padding-top:128px}.attachments{grid-template-columns:repeat(3,minmax(0,1fr))}.composer-foot{align-items:flex-end}.feed-tools{flex-direction:column}.search,.sort{width:100%}.media-grid.two,.media-grid.many{grid-template-columns:1fr}.post-media{min-height:180px}.viewer-label{display:none}.publisher-bar{align-items:flex-start;flex-direction:column}.connect{width:100%}}
 @media(max-width:440px){.attachments{grid-template-columns:repeat(2,minmax(0,1fr))}.composer-head,.composer-body,.post-head,.post-message,.post-foot{padding-left:14px;padding-right:14px}.publish{min-width:112px}}
+
+/* Compact hamburger navigation */
+.nav-hamburger{
+  max-width:1220px;
+  min-height:64px;
+  padding:10px 24px;
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  position:relative;
+}
+.menu-toggle{
+  width:48px;
+  height:48px;
+  padding:0;
+  border:1px solid rgba(213,174,103,.28);
+  border-radius:50%;
+  background:rgba(4,4,4,.62);
+  color:var(--gold2);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:5px;
+  cursor:pointer;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  transition:border-color .2s ease,background .2s ease,transform .2s ease;
+}
+.menu-toggle:hover{
+  border-color:rgba(240,209,140,.68);
+  background:rgba(12,10,7,.84);
+}
+.menu-toggle:focus-visible{
+  outline:2px solid var(--gold2);
+  outline-offset:3px;
+}
+.menu-toggle span{
+  width:21px;
+  height:1.5px;
+  display:block;
+  background:currentColor;
+  transform-origin:center;
+  transition:transform .22s ease,opacity .18s ease;
+}
+.menu-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.menu-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+.menu-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.site-menu{
+  position:absolute;
+  top:60px;
+  right:24px;
+  min-width:220px;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  background:rgba(3,3,3,.94);
+  border:1px solid rgba(213,174,103,.22);
+  border-radius:12px;
+  box-shadow:0 18px 50px rgba(0,0,0,.55);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(-8px);
+  pointer-events:none;
+  transition:opacity .18s ease,transform .18s ease,visibility .18s ease;
+}
+.site-menu.open{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+.site-menu a{
+  display:block;
+  padding:13px 14px;
+  border-radius:8px;
+  color:#d8cfbf;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.site-menu a[aria-current="page"]{
+  color:var(--gold2);
+  background:rgba(213,174,103,.08);
+}
+.site-menu a:hover,
+.site-menu a:focus-visible{
+  color:#fff;
+  background:rgba(213,174,103,.10);
+  outline:none;
+}
+@media(max-width:620px){
+  .nav-hamburger{min-height:58px;padding:7px 14px}
+  .menu-toggle{width:44px;height:44px}
+  .site-menu{top:54px;right:14px;left:14px;min-width:0}
+}
+
 </style>
 </head>
 <body>
-<header class="header"><div class="nav"><a class="brand" href="index.html"><strong>MRU</strong> · Manuscript Research University of Elohim</a><nav><a href="index.html#about">About</a><a href="index.html#research">Research</a><a href="education.html" aria-current="page">Education</a><a href="index.html#manifestations">Manifestations</a><a href="index.html#connect">Connect</a></nav></div></header>
+<header class="header">
+  <div class="nav nav-hamburger">
+    <button class="menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="site-menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="site-menu" class="site-menu" aria-hidden="true">
+      <a href="index.html#about">About</a>
+      <a href="index.html#research">Research</a>
+      <a href="education.html" aria-current="page">Education</a>
+      <a href="index.html#manifestations">Manifestations</a>
+      <a href="index.html#connect">Connect</a>
+    </nav>
+  </div>
+</header>
 <section class="hero"><div class="hero-inner"><div class="eyebrow">MRU Community</div><h1>Education <span>Research · Infographics · Study Materials</span></h1><p class="lead">A running stream of visual scholarship, manuscript studies, source material, educational graphics, and research notes from MRU.</p></div></section>
 <main class="main"><div class="feed-shell">
 <div class="section-label">Publisher</div>
@@ -47,7 +161,7 @@ footer{position:relative;z-index:2;padding:50px 22px 70px;background:#020202;bor
 <br/>
 <br/>© 2026 Manuscript Research University of Elohim  —  email: mru.buckle642@passinbox.com</footer>
 <div class="viewer" id="viewer" aria-hidden="true"><div class="viewer-top"><div class="viewer-label" id="viewerLabel"></div><div class="viewer-actions"><button class="viewer-btn" id="viewerOriginal" type="button">Open Original</button><button class="viewer-btn" id="viewerClose" type="button">Close</button></div></div><div class="viewer-stage" id="viewerStage"><img id="viewerImg" alt=""></div></div>
-<script id="mruStaticPosts" type="application/json">{"version":1,"updatedAt":"2026-08-29T07:14:46.594Z","posts":[{"id":"2c974add-26f7-4784-ae46-89282dc2bd1f","author":"Manuscript Research University of Elohim","createdAt":"2026-08-29T07:00:46.013Z","message":"EVOLUTION OF KARAISM REDUX\n\nCREDIT FOR RESEARCH:  WORLD ALLIANCE OF QARA'IM\n\nhttps://www.youtube.com/post/Ugkx0HeZ8x1JhPiiPsBO_nLsfxoHnyHorCq5 - Original Post","media":[{"name":"0_evolution_of_karaism_redux.webp","type":"image/webp","size":1043294,"path":"education_uploads/20260829-000045-01-0_evolution_of_karaism_redux.webp"}]}]}</script>
+<script id="mruStaticPosts" type="application/json">{"version":1,"updatedAt":"2026-08-29T07:50:48.553Z","posts":[{"id":"2c974add-26f7-4784-ae46-89282dc2bd1f","author":"Manuscript Research University of Elohim","createdAt":"2026-08-29T07:00:46.013Z","message":"EVOLUTION OF KARAISM REDUX\n\nCREDIT FOR RESEARCH:  WORLD ALLIANCE OF QARA'IM\n\nhttps://www.youtube.com/post/Ugkx0HeZ8x1JhPiiPsBO_nLsfxoHnyHorCq5 - Original Post","media":[{"name":"0_evolution_of_karaism_redux.webp","type":"image/webp","size":1043294,"path":"education_uploads/20260829-000045-01-0_evolution_of_karaism_redux.webp"}]}]}</script>
 <script>
 const $=id=>document.getElementById(id);
 const postText=$('postText'),fileInput=$('fileInput'),dropzone=$('dropzone'),attachments=$('attachments'),fileCount=$('fileCount'),charCount=$('charCount'),publishBtn=$('publishBtn'),cancelEdit=$('cancelEdit'),editBanner=$('editBanner'),editPostDate=$('editPostDate'),statusEl=$('statusEl'),feed=$('feed'),search=$('search'),sort=$('sort');
@@ -123,5 +237,38 @@ viewerClose.addEventListener('click',closeViewer);viewerOriginal.addEventListene
 window.addEventListener('beforeunload',()=>{clearNewFiles();clearPreviewUrls();if(viewerUrl)URL.revokeObjectURL(viewerUrl);});
 updatePublishState();loadPublishedPosts();
 </script>
+
+<script>
+(function(){
+  const toggle = document.querySelector('.menu-toggle');
+  const menu = document.getElementById('site-menu');
+  if(!toggle || !menu) return;
+
+  function setMenu(open){
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+    menu.classList.toggle('open', open);
+    menu.setAttribute('aria-hidden', String(!open));
+  }
+
+  toggle.addEventListener('click', function(e){
+    e.stopPropagation();
+    setMenu(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  menu.addEventListener('click', function(e){
+    if(e.target.closest('a')) setMenu(false);
+  });
+
+  document.addEventListener('click', function(e){
+    if(!menu.contains(e.target) && !toggle.contains(e.target)) setMenu(false);
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') setMenu(false);
+  });
+})();
+</script>
+
 </body>
 </html>
